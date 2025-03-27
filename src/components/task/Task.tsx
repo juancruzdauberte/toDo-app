@@ -1,4 +1,4 @@
-import { type Task as TypeTask } from "../types";
+import { type Task as TypeTask } from "../types/types";
 import { useContext } from "react";
 import { TaskContext } from "../context/TaskContext";
 
@@ -11,20 +11,20 @@ export const Task = ({ id, completed, title }: Props) => {
     return <p> no existe el contexto</p>;
   }
 
-  const { handleRemoveTask } = taskContext;
+  const { handleRemoveTask, handleCompletedTask } = taskContext;
+
   return (
     <div className="view">
       <input
         className="toggle"
         type="checkbox"
         checked={completed}
-        onChange={() => {}}
+        onChange={(e) =>
+          handleCompletedTask({ id, completed: e.target.checked })
+        }
       />
       <label>{title}</label>
-      <button
-        className="destroy"
-        onClick={() => handleRemoveTask({ id })}
-      ></button>
+      <button className="destroy" onClick={() => handleRemoveTask(id)}></button>
     </div>
   );
 };

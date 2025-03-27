@@ -1,15 +1,6 @@
 import { createContext, ReactNode, useState } from "react";
-import { ListOfTask } from "../types";
-import { type TaskId } from "../types";
-
-interface TaskContextType {
-  tasks: ListOfTask;
-  handleRemoveTask: ({ id }: TaskId) => void;
-}
-
-type TaskProvider = {
-  children: ReactNode;
-};
+import { ListOfTask } from "../types/types";
+import { TaskContextType } from "../types/types";
 
 export const TaskContext = createContext<TaskContextType | undefined>(
   undefined
@@ -19,7 +10,7 @@ const mockToDos: ListOfTask = [
   {
     id: "1",
     title: "gim",
-    completed: false,
+    completed: true,
   },
   {
     id: "2",
@@ -38,14 +29,45 @@ const mockToDos: ListOfTask = [
   },
 ];
 
-export const TaskProvider = ({ children }: TaskProvider) => {
+export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [tasks, setTasks] = useState(mockToDos);
 
-  const handleRemoveTask = ({ id }: TaskId): void => {
+  const handleRemoveTask = (id: string): void => {
     const newListTasks = tasks.filter((task) => task.id !== id);
     setTasks(newListTasks);
   };
 
-  let value = { handleRemoveTask, tasks };
+  const handleCompletedTask = ({
+    id,
+    completed,
+  }: {
+    id: string;
+    completed: boolean;
+  }): void => {
+    const newListTasks = tasks.map((task) =>
+      task.id === id ? { ...task, completed } : task
+    );
+
+    setTasks(newListTasks);
+  };
+
+  const onClearCompleted = (): void => {
+    const newListTasks = tasks.filter((task) => !task.completed);
+    setTasks(newListTasks);
+  };
+
+  const activeCount = tasks.filter((task) => !task.completed).length;
+
+  const completedCount = tasks.length - activeCount;
+
+  let value = {
+    handleRemoveTask,
+    tasks,
+    handleCompletedTask,
+    completedCount,
+    activeCount,
+    onClearCompleted,
+  };
+
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 };

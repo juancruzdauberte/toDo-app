@@ -1,4 +1,4 @@
-import { type ListOfTask } from "../types";
+import { type ListOfTask } from "../types/types";
 import { Task } from "../task/Task";
 
 interface Props {
